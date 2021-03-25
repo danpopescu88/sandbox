@@ -21,7 +21,7 @@
             "defaultValue": "2019",
             "metadata": {
                 "description": "Version of Windows to deploy: 2012, 2016, 2019"
-            }  
+            }
         },
         "adminUsername": {
             "type": "string",
@@ -136,7 +136,7 @@
                         "id": "[variables('subnetRef')]"
                     },
                     "privateIPAllocationMethod": "Dynamic",
-                    "publicIPAddress": "[if(parameters('deployPublicIpAddress'),variables('publicIPAddress'), json('null'))]"
+                    "publicIPAddress": "[if(equals(parameters('deployPublicIpAddress'), 'True'),variables('publicIPAddress'), json('null'))]"
                 }
             }
         ]
