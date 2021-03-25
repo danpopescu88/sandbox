@@ -1,0 +1,284 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+    "handler": "Microsoft.Azure.CreateUIDef",
+    "version": "0.1.2-preview",
+    "parameters": {
+        "basics": [
+            {
+                "name": "vmName",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Virtual Machine name",
+                "toolTip": "The name of the Virtual Machine.",
+                "defaultValue": "VMtest",
+                "constraints": {
+                    "required": true,
+                    "regex": "^[a-z0-9A-Z-]{3,15}$",
+                    "validationMessage": "The VM Name must be between 3 and 15 characters long and contain letters, numbers and hyphens only."
+                }
+            },
+            {
+                "name": "adminUsername",
+                "type": "Microsoft.Compute.UserNameTextBox",
+                "label": "Username",
+                "toolTip": "Admin username for the machine",
+                "defaultValue": "AzureUser",
+                "osPlatform": "Windows",
+                "constraints": {
+                    "required": true
+                }
+            },
+            {
+                "name": "password",
+                "type": "Microsoft.Common.PasswordBox",
+                "label": {
+                    "password": "Password",
+                    "confirmPassword": "Confirm password"
+                },
+                "toolTip": "Admin password for the virtual machine",
+                "constraints": {
+                    "required": true,
+                    "regex": "^(?=.*[A-Z])(?=.*[.!@#$%^&*()-_=+])(?=.*[0-9])(?=.*[a-z]).{8,40}$",
+                    "validationMessage": "Password must be at least 8 characters long, and contain upper case, lower case, number and symbol"
+                },
+                "options": {
+                    "hideConfirmation": false
+                },
+                "visible": true
+            }
+        ],
+        "steps": [
+            {
+                "name": "VirtualMachineConfig",
+                "label": "Virtual Machine Settings",
+                "subLabel": {
+                    "preValidation": "Configure the virtual machine's resources and settings",
+                    "postValidation": "Done"
+                },
+                "bladeTitle": "Virtual Machine Settings",
+                "elements": [
+                    {
+                        "name": "OSVersion",
+                        "type": "Microsoft.Common.DropDown",
+                        "label": "Windows OS Version",
+                        "defaultValue": "2019",
+                        "toolTip": "The OS Version for the VM Image",
+                        "constraints": {
+                            "allowedValues": [
+                                {
+                                    "value": "2012",
+                                    "label": "2012-Datacenter"
+                                },
+                                {
+                                    "value": "2016",
+                                    "label": "2016-Datacenter"
+                                },
+                                {
+                                    "value": "2019",
+                                    "label": "2019-Datacenter"
+                                }
+                            ],
+                            "required": true
+                        },
+                        "visible": true
+                    },
+                    {
+                        "name": "vmSize",
+                        "type": "Microsoft.Compute.SizeSelector",
+                        "label": "Virtual machine size",
+                        "toolTip": "The size of virtual machine to provision.",
+                        "recommendedSizes": [
+                            "Standard_D2_v2"
+                        ],
+                        "osPlatform": "Windows",
+                        "count": "1"
+                    },
+                    {
+                        "name": "OSdisktype",
+                        "type": "Microsoft.Common.DropDown",
+                        "label": "Atos Disk Type",
+                        "placeholder": "",
+                        "defaultValue": "StandardSSD_LRS",
+                        "toolTip": "",
+                        "constraints": {
+                            "allowedValues": [
+                                {
+                                    "label": "Standard SSD",
+                                    "value": "StandardSSD_LRS"
+                                },
+                                {
+                                    "label": "Standard HDD",
+                                    "value": "Standard_LRS"
+                                },
+                                {
+                                    "label": "Premium SSD",
+                                    "value": "Premium_LRS"
+                                }
+                            ],
+                            "required": true
+                        },
+                        "visible": true
+                    },
+                    {
+                        "name": "sectionNetworking1",
+                        "type": "Microsoft.Common.Section",
+                        "label": "Public IP Address",
+                        "elements": [
+                            {
+                                "name": "PublicIPDropdown",
+                                "type": "Microsoft.Common.DropDown",
+                                "label": "Public IP",
+                                "placeholder": "",
+                                "defaultValue": "False",
+                                "toolTip": "",
+                                "constraints": {
+                                    "allowedValues": [
+                                        {
+                                            "label": "True",
+                                            "value": "True"
+                                        },
+                                        {
+                                            "label": "False",
+                                            "value": "False"
+                                        }
+                                    ],
+                                    "required": true
+                                },
+                                "visible": true
+                            }
+                        ],
+                        "visible": true
+                    },
+                    {
+                        "name": "vnet",
+                        "type": "Microsoft.Network.VirtualNetworkCombo",
+                        "label": {
+                            "virtualNetwork": "Virtual network",
+                            "subnets": "Subnets"
+                        },
+                        "toolTip": {
+                            "virtualNetwork": "",
+                            "subnets": ""
+                        },
+                        "defaultValue": {
+                            "name": "NewVnet",
+                            "addressPrefixSize": "/16"
+                        },
+                        "constraints": {
+                            "minAddressPrefixSize": "/16"
+                        },
+                        "options": {
+                            "hideExisting": false
+                        },
+                        "subnets": {
+                            "subnet": {
+                                "label": "Subnet",
+                                "defaultValue": {
+                                    "name": "subnet-1",
+                                    "addressPrefixSize": "/24"
+                                },
+                                "constraints": {
+                                    "minAddressPrefixSize": "/24",
+                                    "minAddressCount": 12,
+                                    "requireContiguousAddresses": true
+                                }
+                            }
+                        },
+                        "visible": true
+                    }
+                ]
+            },
+            {
+                "name": "vmManagement",
+                "label": "Virtual Machine Management",
+                "bladeTitle": "Virtual Machine Settings",
+                "elements": [
+                    {
+                        "name": "AtosManageDropdown",
+                        "type": "Microsoft.Common.DropDown",
+                        "label": "Atos Managed",
+                        "placeholder": "",
+                        "defaultValue": "True",
+                        "toolTip": "",
+                        "constraints": {
+                            "allowedValues": [
+                                {
+                                    "label": "True",
+                                    "value": "True"
+                                },
+                                {
+                                    "label": "False",
+                                    "value": "False"
+                                }
+                            ],
+                            "required": true
+                        },
+                        "visible": true
+                    },
+                    {
+                        "name": "AtosAntimalwaredropdown",
+                        "type": "Microsoft.Common.DropDown",
+                        "label": "Atos Antimalware",
+                        "placeholder": "",
+                        "defaultValue": "True",
+                        "toolTip": "",
+                        "constraints": {
+                            "allowedValues": [
+                                {
+                                    "label": "True",
+                                    "value": "True"
+                                },
+                                {
+                                    "label": "False",
+                                    "value": "False"
+                                }
+                            ],
+                            "required": true
+                        },
+                        "visible": true
+                    },
+                    {
+                        "name": "AtosBackupBox",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Backup policy schedule",
+                        "toolTip": "The name of backup schedule policy for Virtual Machine",
+                        "defaultValue": "no-backup",
+                        "constraints": {
+                            "required": true
+                        }
+                    },
+                    {
+                        "name": "AtosPatchingBox",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Patching schedule",
+                        "toolTip": "The name of patching schedule for Virtual Machine",
+                        "defaultValue": "no-patching",
+                        "constraints": {
+                            "required": true
+                        }
+                    }
+                ]
+            }
+        ],
+        "outputs": {
+            "virtualMachineName": "[basics('vmName')]",
+            "virtualMachineSize": "[steps('VirtualMachineConfig').vmSize]",
+            "osversion": "[steps('VirtualMachineConfig').OSVersion]",
+            "adminUsername": "[basics('adminUsername')]",
+            "adminPassword": "[basics('password')]",
+			"osDiskType": "[steps('VirtualMachineConfig').OSdisktype]",
+			"deployPublicIpAddress": "[steps('VirtualMachineConfig').PublicIPDropdown]", 
+			"networkResourceGroup": "[steps('VirtualMachineConfig').vnet.resourceGroup]",
+			"vnetName": "[steps('VirtualMachineConfig').vnet.name]",
+			"subnetName": "[steps('VirtualMachineConfig').vnet.subnet.name]",
+			"atosmananged": "[steps('VirtualMachineConfig').AtosManageDropdown]",
+			"atosantimalware": "[steps('VirtualMachineConfig').AtosAntimalwaredropdown]",
+			"atosbackup": "[steps('VirtualMachineConfig').AtosBackupBox]",
+			"atospatchingschedule": "[steps('VirtualMachineConfig').AtosPatchingBox]",
+
+            "dnsLabelPrefix": "[steps('VirtualMachineConfig').publicIpAddress.domainNameLabel]",
+            "publicIPAllocationMethod": "[steps('VirtualMachineConfig').publicIpAddress.publicIPAllocationMethod]",
+            "publicIpSku": "[steps('VirtualMachineConfig').publicIpAddress.sku]",
+            "location": "[location()]"
+        }
+    }
+}
