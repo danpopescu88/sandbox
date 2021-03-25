@@ -95,7 +95,7 @@
                     {
                         "name": "OSdisktype",
                         "type": "Microsoft.Common.DropDown",
-                        "label": "Atos Disk Type",
+                        "label": "OS Disk Type",
                         "placeholder": "",
                         "defaultValue": "StandardSSD_LRS",
                         "toolTip": "",
