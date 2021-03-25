@@ -160,7 +160,7 @@
             "apiVersion": "2019-07-01",
             "location": "[variables('location')]",
             "dependsOn": [
-                "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIpAddressName'))]"
+                "[resourceId('Microsoft.Network/publicIPAddresses/', variables('publicIpAddressName'))]"
             ],
             "properties": {
                 "ipConfigurations": "[variables('ipConfig')]"
@@ -173,7 +173,7 @@
             "apiVersion": "2019-03-01",
             "location": "[variables('location')]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', variables('networkInterfaceName'))]"
+                "[resourceId('Microsoft.Network/networkInterfaces/', variables('networkInterfaceName'))]"
             ],
             "tags": {
                 "AtosManaged": "[parameters('atosmananged')]",               
